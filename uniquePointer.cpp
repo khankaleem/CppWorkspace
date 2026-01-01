@@ -18,6 +18,7 @@ struct DefaultDelete<T[]> {
     }
 };
 
+// Use deleter as a base instead of type which will consume memory : Empty Base Class Optimization
 template<typename T, typename Deleter = DefaultDelete<T>>
 class UniquePtr : private Deleter {
 private:
