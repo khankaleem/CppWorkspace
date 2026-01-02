@@ -3,6 +3,8 @@
 /*
 Implement shared ptr
 pending: weak ptr / thread safety / alloc
+
+check: singlethreadedsharedweakptr.cpp for single threaded shared weak ptr
 */
 
 
