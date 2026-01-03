@@ -20,8 +20,8 @@ public:
     memcpy(newArr, m_arr, sizeof(T) * m_cap);
     m_cap = (m_cap << 1);
     ::operator delete[](m_arr, std::align_val_t(alignof(T)));
-    m_arr[++m_top] = val; 
     m_arr = newArr;
+    m_arr[++m_top] = val; 
   }
   // Pop will work regardless, correctness to be enured by user
   void pop() {
