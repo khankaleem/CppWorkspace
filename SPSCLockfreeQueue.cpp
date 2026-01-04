@@ -25,6 +25,9 @@ public:
     SPSClockFree() {
         // allocate memory
         m_ptr = reinterpret_cast<T*>(::operator new[](SIZE * sizeof(T), std::align_val_t(alignof(T))));
+        // if T has a default CTOR we can optimize 
+        // this by constructing all object befre ahand, and only moveing / copying in push
+        // and not detroying in pop
     }
 
     // Rule of 5
