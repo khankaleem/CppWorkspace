@@ -136,24 +136,25 @@ public:
 int main() {
 
     SPSClockFree<int, 1<<5> q;
-
+    int p = 0;
+    int c = 0;
     std::thread r{
-        [&q]() {
+        [&q, &c]() {
             for(int i = 0; i < 1000; i++) {
-                std::cout << (q.top() == nullptr ? "Read Empty" : "Read " + std::to_string(*q.top()) ) << '\n';
-                q.pop();
+                auto ptr = q.top();
+                c += (ptr == nullptr ? 0 : *ptr);
+                if (q.top()) {
+                    q.pop();
+                }
                 std::this_thread::sleep_for(std::chrono::milliseconds(2));
             }
         }
     };
     std::thread w{
-        [&q]() {
-            for(int i = 1; i < 1000; i++) {
-                if ( !q.push(i) ) {
-                    std::cout << "Push Failed\n";
-                }
-                else {
-                    std::cout << "Pushed: " << i << '\n';
+        [&q, &p]() {
+            for(int i = 1; i < 100; i++) {
+                if ( q.push(i) ) {
+                    p += i;
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(3));
             }
@@ -161,5 +162,6 @@ int main() {
     };
     r.join();
     w.join();
+    assert(p == c);
 
 }
