@@ -7,6 +7,7 @@
 #include<cassert>
 /*
 Multiple Reader Multiple Writer Queue using mutex and condition variables
+This is an Unbounded Queue
 */
 template<typename T>
 class MRMWLockedStdQueue {
