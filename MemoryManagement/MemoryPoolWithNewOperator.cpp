@@ -19,6 +19,7 @@ public:
       return;
     }
     void* rawBytes = allocateRaw(nAllocations);
+    // Can pre fault pages here
     addToPool(rawBytes, nAllocations);
   }
   
