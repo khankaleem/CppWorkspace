@@ -49,7 +49,10 @@ Direct Cache Access:
 
 
 Multithreaded Optimizations:
-  
+  Concurrency Optimization:
+    False Sharing -> All cores fight for E acces over the same cache line
+                     There is a constant Cache Line Ping Pong
+                     Massive Bus Traffic, and Processing delays accept the one having E access.
 
 
 
