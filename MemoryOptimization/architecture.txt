@@ -53,8 +53,8 @@ Multithreaded Optimizations:
     False Sharing -> All cores fight for E acces over the same cache line
                      There is a constant Cache Line Ping Pong
                      Massive Bus Traffic, and Processing delays accept the one having E access.
-
-
+                     Big performance killer on SMP Machines.
+                     Cache Coherency Messages and the Cache Line Data has to travel across the system bus or interconnect
 
 
 
