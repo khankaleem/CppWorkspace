@@ -77,6 +77,7 @@ Optimizing L1i:
   Instructions are generally cached in decoded form
 
   Hardware Branch Predictor : Determine the target of jump many cycles before
+  Ther determine
   Maxmime Instruction Cache Performance:
   1. Reduce Code footprint : Balance with with optimizations like loop unrolling , and inlining.
       O3 -> deals with loop optimizations, and function inlining
@@ -101,6 +102,8 @@ Optimizing L1i:
         3. Cache Line Waste is minimized by exiling cold code to a different page, and increasing spatial locality of cold code
         Block reordering takes place.
         Cold code is stored in .text.unlikely
+     So likely unlikely is used to increase the spatial locality of hot code
+     and to improve static prediciton.
 
   3. Align Code
     We need to align to optimize prefetching and decoding
