@@ -3,6 +3,8 @@ CPU Caches:
   
 
 
+
+
 Virtual Memory:
       
 
@@ -23,8 +25,6 @@ Cache Bypass:
   They are implemented using streaming load buffers
   We can load a full 64 bytes at once in the streaming load buffers
   e.g __m128i _mm_stream_load_si128 (__m128i *p);
-
-
 
 
 
