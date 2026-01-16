@@ -25,7 +25,7 @@ Optimizing L1d:
     Split the matrix into 64 * 64 blocks for the mulitplication
     This ensures that every cache line loaded is utilized to the full before eviction
 
-  2. Struct Layout: Pack the object in as little Cache lines as Possible, to imporive cache efficiency
+  2. Struct Layout: Pack the object in as little Cache lines as Possible, to improve cache efficiency
     1. Move the structure element which is most likely to be the critical word to the front
     2. In a structure Arrange elements in the order in which they are likely to be accessed
     3. For a structure spanning multiple cache lines, each cache line block should be rearranged to follow 1/2.
@@ -51,10 +51,10 @@ Optimizing L1d:
       L2d Cache is larger, so we can increase associativty to decrease conflict misses, usually 16way
 
       L1d is VIPT
-        So programmer has control to what goes in a set.
+        So programmer has control on what goes in a set.
         If L1d is 8 - way assocaitaive and size is 32KB, 64 Byte Cache Line
         Number of sets = 32KB / 64B / 8 = 64 sets -> addressable using 6 bits
-        So after every 12bits
+        So after every 12bits, i.e 4096 bytes data maps to existing sets -> we can avoid this
       
     
   
