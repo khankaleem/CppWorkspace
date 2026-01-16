@@ -49,6 +49,7 @@ Direct Cache Access:
 
 
 Multithreaded Optimizations:
+
   Concurrency Optimization:
     False Sharing -> 
        Same cache line and different cores write to it,
@@ -77,9 +78,16 @@ Multithreaded Optimizations:
         Each processor has a maximum bandwidth to the memory shared by cores and hyper threads
         Available memory bandwidth can limit performance
 
-        Massive bandwidth usage: Two threads on different processors using the same dataset. 
-        Which means each data has to be read twice from memory
+        Massive bandwidth usage: 
+          Two threads on different processors using the same dataset. 
+          Which means each data has to be read twice from memory
+          Put them in the same processor
 
+        Thread Affinity: assign a thread to one or more cores
+            int pthread_setaffinity_np(pthread_t th, size_t size, const cpu_set_t *cpuset);
+
+          Two threads working on seperate data: Put them on different processors
+          
 
 
 
