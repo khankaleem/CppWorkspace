@@ -111,7 +111,7 @@ Optimizing L1i:
       2. start of blocks reached through jumps
       3. maybe loops : NoOps can cause delay in fall through of loop
 
-
+  
 
 
 Prefetching:
