@@ -79,7 +79,7 @@ Optimizing L1i:
   Hardware Branch Predictor : Determine the target of jump many cycles before
   Ther determine
   Maxmime Instruction Cache Performance:
-  1. Reduce Code footprint : Balance with with optimizations like loop unrolling , and inlining.
+  1. Reduce Code footprint : Balance with with optimizations like loop unrolling, and inlining.
       O3 -> deals with loop optimizations, and function inlining
       Inlining Pros:
         Inlining allows compiler to optimize large chunks of code at a time, whch enables machien code with better ILP
@@ -105,11 +105,11 @@ Optimizing L1i:
      So likely unlikely is used to increase the spatial locality of hot code
      and to improve static prediciton.
 
-  3. Align Code
+  3. Align Code : NoOps are inserted at the begining
     We need to align to optimize prefetching and decoding
       1. start of functions
       2. start of blocks reached through jumps
-      3. maybe loops
+      3. maybe loops : NoOps can cause delay in fall through of loop
 
 
 
