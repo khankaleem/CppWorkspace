@@ -50,14 +50,20 @@ Direct Cache Access:
 
 Multithreaded Optimizations:
   Concurrency Optimization:
-    False Sharing -> All cores fight for E acces over the same cache line
+    False Sharing -> 
+                     Same cache line and different cores write to it,
+                     they all fight for E access over the same cache line
                      There is a constant Cache Line Ping Pong
                      Massive Bus Traffic, and Processing delays accept the one having E access.
                      Big performance killer on SMP Machines.
                      Cache Coherency Messages and the Cache Line Data has to travel across the system bus or interconnect
 
-
-
+                     Solutions:
+                       1. Seperate read only data -> mark const, or move it to particular section (attribute section e.g ".data.ro")
+                       2. Put variables which are accessed only by 1 thread in the same struct : Optimize localilty
+                       3. Variables read / write should be aligned to cache lines size
+                       4. Use TLS : Can cause high memory foot print, and impacts thread launch time
+      
 
 
 
