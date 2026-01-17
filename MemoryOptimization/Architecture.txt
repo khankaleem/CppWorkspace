@@ -75,7 +75,7 @@ When the Linux scheduler makes placement decisions, the implicit preference orde
  -> same NUMA node
  -> remote NUMA node
 
-
+In an SMP system, the microarchitecture is the same across CPUs/cores
   
 CPU Caches:
   Cache : SRAM, Resources administrated by the processors
