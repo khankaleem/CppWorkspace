@@ -1,12 +1,78 @@
 CPU Caches:
+  Cache : SRAM, Resources administrated by the processors
+  Cache stores copies of data / instructions which is likely to be used soon, it works beause all programs have temporal, and spatial locality
+  Most programs although have working set bigger than the Cache
+  CPU is not connected to Main Memory, All Loads and Stores must go through the Cache
+  CPU and Cache connection is very fast
+
+  L1 Cache and RAM speed difference is very high, so we need more layers of Caches 
+  Most CPUs have L1d, L1i, L2(Unified instrunction and data), L3(Shared) across cores) Cache
+
+  A Cache Line is 64 bytes, The memory bus width(e.g 8Bytes) determines the transfers per Cache Line
   
+  [T bits for the tag][S bits for Cache set][6 bits for Cache Line Offset]
+  Tag - Data(Cache Line) - Valid/Invalid - DirtBit - ....
+  Exclusive or Inclusive Caches
+  L1  -  4 Cycles
+  L2  - 14 Cycles
+  L3  - 50 Cycles
+  RAM - 250+ Cycles
+  CPUs hide the Memory Access Latency
+  Loads - OOO, Prefetching - (Bandwidth / Limited ILP can hurt)
+  Stores - Store Buffers
+
+  Associativity:
+    Fully Associative :  Less Speed, Less Conflicts Misses - Best for Small Caches
+    K Set Associative :  More Speed, More Conflict Misses - Best for Large Caches - Combines Fully / Direct Benefits
+    L1 -> 8 Way L2 / L3 -> 16 Way, Beyond 16 Hardware Complexity rises  
+    L1 TLB -> Usually Fully Asssociative, L2 TLB -> 8 Way
+    Direct Mapped(K = 1) : Best Speed, Worst Conflict Misses
+
+  Cache Effects:
+    Array Sequential Access:
+      WS < L1d : L1 access latency around 4 cycles
+      WS < L2d : Misses will icnrease but Harware prefetcher will do its job and hide the L2 access latency, so latency ~ 8 cycles
+      WS > L2d : Misses will increase more, but Harware prefetcher will again do its job and hide the RMA access latency ~ 10 cycles
+                 Hardwware prefetcher has to be really aggressive in this case to completly hide the RAM latency
+                
+      Element Size is a single Cache Line:
+        WS < L1d : same
+        WS < L2d : L2 penallty will show up, as a new Cache Line is touched on every access, and prefetcher cant keep up
+        WS > L2d : L2 + RAM penalty will show up becasue of reason above
+        Another reason prefetcher cant hide RAM latency will be Page faults because hardware prefetcher cant work outside page boundaries
+        Also if WSS increases this can cause TLB misses, resulting in a page table walk, which itself resides in RAM.
+
+    
+
   
+        
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 Virtual Memory:
       
+
+
+
+
+
+
+
 
 
 
