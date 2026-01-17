@@ -12,6 +12,8 @@ CPU Caches:
   
   [T bits for the tag][S bits for Cache set][6 bits for Cache Line Offset]
   Tag - Data(Cache Line) - Valid/Invalid - DirtBit - ....
+  L1d use VIPT : virtual indexing plus physical tag
+
   Exclusive or Inclusive Caches
   L1  -  4 Cycles
   L2  - 14 Cycles
@@ -63,34 +65,43 @@ CPU Caches:
         Bus contention is possible, NUMA systems will ahve high latency, 
 
 
+  Hyper Threading:
+    Hyper threading is useful only when wait time(Due To Cache Miss or IO) for a thread is large. otherwise it is useless
+    Cache hit rate must be low enough, given reduced cache size, and new hit rate dont impact
 
-
-
-
-
-
-
-
-
-
+  
 
 
 
 
 
 Virtual Memory:
-      
+  Makes a proces think it is alone in the system
+  MMU does the transaltion, CPU fills in the pages
 
+  [Virtual Page Number][Page offset - 12bits for 4kb pages]
+      |
+       _ Index into the Page Table to find the physical frame number
 
+  Page table is stored in Main Memory
+  Page table can be huge, so multilevel page tables are used
+  [][9 bits][9 bits][9 bits][9 bits][9 bits][12 bits for offset]
+  2**9 entries = 512, 512 * 8bytes = 4KB -> fits in one page
+  Inner most level 1 page can address 512 * 4KB = 2MB of memmory
 
+  Main Memory access is required for each direcotry access, which can be slow,
+  So L1d and higher level also cache it, but still access can be extremely slow.
+  This requires TLB, which stores the complet virtual page nu,ber to physical page number mapping
+  L1 ITLB
+  L1 DTLB
+  L2 is unified
 
+  On context swtihc of a process TLB is not flushed, isntead ASID are used
+  Increasing 4KB page size can lead to fragmentation.
+  But will increse TLB hit rate, and also decrease Page table hence page table tree levels.
 
-
-
-
-
-
-
+  Use huge pages (using hugetlbfs fielsystem)- setup at boot time, this just creates a fixed number of huge physical pages.
+  
 
 
 Cache Bypass:
