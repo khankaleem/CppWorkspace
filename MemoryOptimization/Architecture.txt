@@ -1,3 +1,14 @@
+Socket
+ └── CPU Package
+      ├── Die 0
+      │    ├── Core 0
+      │    ├── Core 1
+      │    └── ...
+      ├── Die 1
+      │    ├── Core N
+      │    └── ...
+
+
 CPU Caches:
   Cache : SRAM, Resources administrated by the processors
   Cache stores copies of data / instructions which is likely to be used soon, it works beause all programs have temporal, and spatial locality
