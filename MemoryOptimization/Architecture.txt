@@ -1,6 +1,6 @@
                  ┌────────────────────────────────┐
-                 │           Intel Socket          │
-                 │       (1 CPU Package)           │
+                 │           Intel Socket         │
+                 │       (1 CPU Package)          │
                  │                                │
                  │   ┌────────────────────────┐   │
                  │   │           Die0         │   │
