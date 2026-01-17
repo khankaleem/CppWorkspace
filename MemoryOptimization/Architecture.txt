@@ -57,26 +57,47 @@
                  └────────────────────────────────┘
 
 Scheduler:
-kernel tries to schedule / allocate emory on the same Numa node but does not guarantee
-      NUMA Node 0                  NUMA Node 1
-   ┌─────────────────┐          ┌─────────────────┐
-   │ CPUs: 0–15      │◄────────►│ CPUs: 16–31     │
-   │ Local DRAM      │  slower  │ Local DRAM      │
-   └─────────────────┘          └─────────────────┘
-        ↑       ↑                     ↑       ↑
-        |       |                     |       |
-     tasks   pages                 tasks   pages
+  kernel tries to schedule / allocate emory on the same Numa node but does not guarantee
+        NUMA Node 0                  NUMA Node 1
+     ┌─────────────────┐          ┌─────────────────┐
+     │ CPUs: 0–15      │◄────────►│ CPUs: 16–31     │
+     │ Local DRAM      │  slower  │ Local DRAM      │
+     └─────────────────┘          └─────────────────┘
+          ↑       ↑                     ↑       ↑
+          |       |                     |       |
+       tasks   pages                 tasks   pages
 
-When the Linux scheduler makes placement decisions, the implicit preference order is roughly:
- -> same core
- -> same SMT sibling (Hyper-Threading)
- -> same die
- -> same socket
- -> same NUMA node
- -> remote NUMA node
+  When the Linux scheduler makes placement decisions, the implicit preference order is roughly:
+   -> same core
+   -> same SMT sibling (Hyper-Threading)
+   -> same die
+   -> same socket
+   -> same NUMA node
+   -> remote NUMA node
 
-In an SMP system, the microarchitecture is the same across CPUs/cores
-  
+  In an SMP system, the microarchitecture is the same across CPUs/cores
+  In an HMP system, the microarchitecture is different across CPUs/cores
+
+  CFS Schdeuler in Linux
+    CFS tries to give each runnable task an equal share of CPU time, proportional to its weight (priority).
+    They are arranged in a red black tree
+
+    Task has niceness value [-20, 19] i.e aggressive to most nice
+    Each task has a vruntime
+    Task having high priority(low nice value) vruntime increases slowly
+    Task having low priority(high nice value) vruntime increases quickly
+    Task having the least vruntime is selected for running
+    Task Time Slice = Target Latency(A small window of time (e.g., 20ms) where the kernel tries to give every runnable task at least one "turn.") × Total Weight of all TasksTask Weight​
+    Weight: A task with a Nice value of -20 has a much higher weight than a task with Nice 0.
+    
+    Load balancing:
+      Load of a task = f(Niceness, rate of CPU Utilizaiton)
+      Load on a queue = sum of task loads
+      It tries to balance this load across scheduling domains
+
+
+
+
 CPU Caches:
   Cache : SRAM, Resources administrated by the processors
   Cache stores copies of data / instructions which is likely to be used soon, it works beause all programs have temporal, and spatial locality
