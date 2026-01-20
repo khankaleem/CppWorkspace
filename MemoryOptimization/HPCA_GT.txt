@@ -76,10 +76,21 @@ Cache Coherence:
 
 
         Directory Based Coherence :
+Instead of asking everyone, ask only those who actually have the line.
 
-
-
-
+A directory is metadata that tracks who has a cache line.
+For each cache line, the directory stores something like:
+Directory entry for line X:
+- State: Uncached / Shared / Modified
+- Sharers: {C1, C4, C7}
+- Owner: C2 (if Modified or Owned)
+Feature	Snooping	Directory
+Request scope	Broadcast	Targeted
+Sharer tracking	Implicit	Explicit
+ACK fan-in	All cores	Only sharers
+Scalability	Poor	Good
+Complexity	Simple	Complex
+Used today	Small systems	Large systems
 
         Cache Miss :
           3 Cs
