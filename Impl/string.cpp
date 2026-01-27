@@ -5,7 +5,7 @@ class String {
     static size_t constexpr SSO_SIZE = 16;  
     size_t m_size{};
     size_t m_cap{SSO_SIZE-1};
-    char m_data[SSO_SIZE]{};
+    alignas(alignof(char*)) char m_data[SSO_SIZE]{};
     bool isSmall() const {
         return m_cap < SSO_SIZE;
     }
