@@ -17,6 +17,8 @@ public:
 
 
 
+
+
 // Square Root
 template<bool pred, typename U, typename V>
 class IfThenElse {
@@ -44,6 +46,10 @@ public:
   static constexpr int value = L;
 };
 
+
+
+
+
 // Iterative Square Root
 template<int I>
 class ValueWrapper {
@@ -56,6 +62,29 @@ class IterativeSquareRoot {
 public:
   static constexpr int value = type::value;
 };
+
+
+
+
+// Dot Product
+template<typename T, int I>
+class DotProduct {
+public:
+  static constexpr int result(const T* a, const T* b) {
+    return ((*a) * (*b)) + DotProduct<T, I-1>::result(a+1, b+1);
+  }
+};
+
+template<typename T>
+class DotProduct<T, 1> {
+public:
+  static constexpr int result(const T* a, const T* b) {
+    return ((*a) * (*b));
+  }
+};
+
+
+
 
 
 //Compile time nCr computation
