@@ -30,7 +30,7 @@ T parrallel_accumulate(Iterator st, Iterator en, T init) {
     for (int threadnum = 0; threadnum < numThreads-1; threadnum++) {
         Iterator blk_en = blk_st;
         std::advance(blk_en, blksz);
-        workers.emplace_back(std::thread{accumulator, std::ref(result[threadnum].m_val), blk_st, blk_en});
+        workers.emplace_back(accumulator, std::ref(result[threadnum].m_val), blk_st, blk_en);
         blk_st = blk_en;
     }
     workers.push_back(std::thread{accumulator, std::ref(result[numThreads-1].m_val), blk_st, en});
