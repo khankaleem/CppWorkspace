@@ -8,6 +8,8 @@
 #include<shared_mutex>
 #include<list>
 
+
+
 template<typename KeyT, typename ValueT, typename HashT = std::hash<KeyT>>
 class ConcurrentHashMap : public HashT {
 public:
@@ -22,10 +24,10 @@ private:
       using Chain = std::list<Elem>;
       using Iterator = typename Chain::iterator;
       using ConstIterator = typename Chain::const_iterator;
+      mutable std::shared_mutex m_mutex;
+      Chain m_chain;
 
     private:
-      Chain m_chain;
-      mutable std::shared_mutex m_mutex;
 
       ConstIterator find_unsafe(const Key& key_) const {
         return std::find_if(m_chain.begin(), 
@@ -111,6 +113,21 @@ public:
   }
   void erase(const Key& key_) {
     getBucket(key_).erase(key_);
+  }
+
+  std::map<Key, Value> getSnapshot() const {
+    std::vector<std::shared_lock<std::shared_mutex>> locks;
+    locks.reserve(m_cap);
+    for (size_t i = 0; i < m_cap; i++) {
+      locks.emplace_back(m_bucketptr[i]->m_mutex);
+    }
+    std::map<Key, Value> ret;
+    for (size_t i = 0; i < m_cap; i++) {
+      for(auto elt: m_bucketptr[i]->m_chain) {
+        ret.insert(elt);
+      }
+    }
+    return ret;
   }
 
 };
