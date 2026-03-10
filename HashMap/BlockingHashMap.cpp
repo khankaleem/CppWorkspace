@@ -16,7 +16,7 @@ public:
   using Hash = HashT;
 
 private: 
-  struct Bucket {
+  struct alignas(64) Bucket {
     public:
       using Elem = std::pair<Key, Value>;
       using Chain = std::list<Elem>;
@@ -45,14 +45,16 @@ private:
     public:
       Bucket() = default;
 
-      void insert_or_update(const Key& key_, const Value& val_) {
+      template<typename K, typename V>
+      std::enable_if_t< std::is_constructible_v<Key, K&&> && std::is_constructible_v<Value, V&&> > 
+      insert_or_update(K&& key_, V&& val_) {
         std::unique_lock<std::shared_mutex> lock{m_mutex};
         auto it = find_unsafe(key_);
         if (it == m_chain.end()) {
-          m_chain.push_front(Elem(key_, val_));
+          m_chain.push_front(Elem(std::forward<K>(key_), std::forward<V>(val_)));
         }
         else {
-          it->second = val_;
+          it->second = std::forward<V>(val_);
         }
       }
       void erase(const Key& key_) {
@@ -99,8 +101,10 @@ public:
   ConcurrentHashMap(const ConcurrentHashMap& other) = delete;
   ConcurrentHashMap& operator=(const ConcurrentHashMap& other) = delete;
 
-  void insert_or_update(const Key& key_, const Value& val_) {
-    getBucket(key_).insert_or_update(key_, val_);
+  template<typename K, typename V>
+  std::enable_if_t< std::is_constructible_v<Key, K&&> && std::is_constructible_v<Value, V&&> > 
+  insert_or_update(K&& key_, V&& val_) {
+    getBucket(key_).insert_or_update(std::forward<K>(key_), std::forward<V>(val_));
   }
   std::optional<Value> get_value(const Key& key_) const {
     return getBucket(key_).get_value(key_);
