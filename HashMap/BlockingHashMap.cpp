@@ -90,7 +90,7 @@ private:
   }
 
 public:
-  explicit ConcurrentHashMap(size_t cap_ = (1<<8)) : m_cap{cap_}, m_bucketptr{new BucketPtr[cap_]} {
+  explicit ConcurrentHashMap(size_t cap_ = (1<<8)) : m_cap{cap_}, m_bucketptr{std::make_unique<BucketPtr[]>(cap_)} {
     for (size_t i = 0; i < m_cap; i++) {
       m_bucketptr[i] = std::make_unique<Bucket>();
     }
