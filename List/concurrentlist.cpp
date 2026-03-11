@@ -1,0 +1,80 @@
+
+template<typename ElemT>
+class ConcurrentList {
+private:
+  
+  struct Node {
+    std::shared_ptr<ElemT> m_data{};
+    std::unique_ptr<Node> m_next{};
+    mutable std::mutex m_mutex;
+    Node() = default;
+    Node(const ElemT& data_) : m_data{std::make_shared<ElemT>(data_)} {}
+    Node(ElemT&& data_) : m_data{std::make_shared<ElemT>(std::move(data_))} {}
+  };
+  
+  std::unique_ptr<Node> m_head{};
+
+public:
+  ConcurrentList() : m_head{std::make_unique<Node>()} {};
+  ConcurrentList(const ConcurrentList& other) = delete;
+  ConcurrentList& operator=(const ConcurrentList& other) = delete;
+
+  void push_front(const ElemT& data_) {
+    std::unique_ptr<Node> new_node{std::make_unique<Node>(data_)};
+    std::lock_guard<std::mutex> guard{m_head->m_mutex};
+    new_node->m_next = std::move(m_head->m_next);
+    m_head->m_next = std::move(new_node);
+  }
+
+  template<typename Visitor>
+  void for_each(Visitor&& visitor) const {
+    std::unique_lock<std::mutex> prev_lock{m_head->m_mutex};
+    Node* prev = m_head.get();
+    Node* cur; 
+    while((cur = prev->m_next.get())) {
+      std::unique_lock<std::mutex> cur_lock{cur->m_mutex};
+      prev_lock.unlock();
+      visitor(cur->m_data);
+      prev = cur;
+      prev_lock = std::move(cur_lock);
+    }
+  }
+
+  template<typename Predicate>
+  std::shared_ptr<ElemT> find_if(Predicate&& pred) const {
+    std::unique_lock<std::mutex> prev_lock{m_head->m_mutex};
+    Node* prev = m_head.get();
+    Node* cur; 
+    while((cur = prev->m_next.get())) {
+      std::unique_lock<std::mutex> cur_lock{cur->m_mutex};
+      prev_lock.unlock();
+      if (pred(*cur->m_data)) {
+        return cur->m_data;
+      }
+      prev = cur;
+      prev_lock = std::move(cur_lock);
+    }
+    return std::shared_ptr<ElemT>();
+  }
+
+  template<typename Predicate>
+  void erase_if(Predicate&& pred) {
+    std::unique_lock<std::mutex> prev_lock{m_head->m_mutex};
+    Node* prev = m_head.get();
+    Node* cur; 
+    while((cur = prev->m_next.get())) {
+      std::unique_lock<std::mutex> cur_lock{cur->m_mutex};
+      if (pred(*cur->m_data)) {
+        std::unique_ptr<Node> dead{std::move(prev->m_next)};
+        prev->m_next = std::move(cur->m_next);
+        cur_lock.unlock();
+      }
+      else {
+        prev = cur;
+        prev_lock = std::move(cur_lock);
+      }
+    }
+  }
+
+};
+template class ConcurrentList<int>;
