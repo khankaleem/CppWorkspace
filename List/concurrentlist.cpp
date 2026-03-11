@@ -18,8 +18,10 @@ private:
     std::unique_ptr<Node> m_next{};
     mutable std::mutex m_mutex;
     Node() = default;
-    Node(const ElemT& data_) : m_data{std::make_shared<ElemT>(data_)} {}
-    Node(ElemT&& data_) : m_data{std::make_shared<ElemT>(std::move(data_))} {}
+
+    template<typename E,
+             typename = std::enable_if_t< std::is_constructible_v<ElemT, E&&> > >
+    Node(E&& data_) : m_data{std::make_shared<ElemT>(std::forward<E>(data_))} {}
   };
   
   std::unique_ptr<Node> m_head{};
@@ -29,8 +31,9 @@ public:
   ConcurrentList(const ConcurrentList& other) = delete;
   ConcurrentList& operator=(const ConcurrentList& other) = delete;
 
-  void push_front(const ElemT& data_) {
-    std::unique_ptr<Node> new_node{std::make_unique<Node>(data_)};
+  template<typename E>
+  std::enable_if_t< std::is_constructible_v<ElemT, E&&> > push_front(E&& data_) {
+    std::unique_ptr<Node> new_node{std::make_unique<Node>(std::forward<E>(data_))};
     std::lock_guard<std::mutex> guard{m_head->m_mutex};
     new_node->m_next = std::move(m_head->m_next);
     m_head->m_next = std::move(new_node);
