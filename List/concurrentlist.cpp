@@ -9,6 +9,8 @@
 #include<list>
 #include<map>
 
+
+
 template<typename ElemT>
 class ConcurrentList {
 private:
@@ -47,7 +49,7 @@ public:
     while((cur = prev->m_next.get())) {
       std::unique_lock<std::mutex> cur_lock{cur->m_mutex};
       prev_lock.unlock();
-      visitor(cur->m_data);
+      visitor(*cur->m_data);
       prev = cur;
       prev_lock = std::move(cur_lock);
     }
@@ -61,7 +63,7 @@ public:
     while((cur = prev->m_next.get())) {
       std::unique_lock<std::mutex> cur_lock{cur->m_mutex};
       prev_lock.unlock();
-      if (pred(*cur->m_data)) {
+      if (pred(static_cast<const ElemT&>(*cur->m_data))) {
         return cur->m_data;
       }
       prev = cur;
@@ -77,7 +79,7 @@ public:
     Node* cur; 
     while((cur = prev->m_next.get())) {
       std::unique_lock<std::mutex> cur_lock{cur->m_mutex};
-      if (pred(*cur->m_data)) {
+      if (pred(static_cast<const ElemT&>(*cur->m_data))) {
         std::unique_ptr<Node> dead{std::move(prev->m_next)};
         prev->m_next = std::move(cur->m_next);
         cur_lock.unlock();
