@@ -1,0 +1,213 @@
+The SOLID principles are a set of five design guidelines in object-oriented 
+programming intended to make software designs more understandable, 
+flexible, and maintainable. 
+They were promoted by Robert C. Martin ("Uncle Bob") and are the "North Star" for writing clean code.
+
+1. Single Responsibility Principle (SRP)
+
+    "A class should have one, and only one, reason to change."
+
+A class should do one thing. If a class handles database logic, logging, and data processing, 
+it’s a "God Object" that will break easily.
+
+    Bad Example: A User class that saves itself to a database and also generates a PDF report of the user's data.
+
+    Good Example: A User class for data, a UserRepository for database operations, and a UserReportGenerator for the PDF.
+
+Orthogonal aspects should not be implemented together.
+
+Guideline: "Prefer cohesive software entities. 
+            Everything that does not strictly belong together should be seperated."
+
+
+
+2. Open/Closed Principle (OCP)
+
+    "Software entities should be open for extension, but closed for modification."
+
+You should be able to add new functionality without 
+touching the existing, tested code. You achieve this using interfaces or inheritance.
+
+    Bad Example: A DiscountCalculator class with a giant if-else block for "Student," "Senior," and "Veteran" discounts. 
+    Adding a "Black Friday" discount requires modifying the core class.
+
+    Good Example: An IDiscount interface. Each discount type is its own class. 
+    The calculator just loops through a list of IDiscount objects.
+
+Guideline: Prefer software design that allows types to be 
+modiefied without the need to modify exisitng code !
+
+
+3. Liskov Substitution Principle (LSP)
+
+    "Objects of a superclass should be replaceable
+     with objects of its subclasses without breaking the application."
+
+If Class B is a subclass of Class A, you should be able to pass B into any
+ method that expects A without it exploding or behaving weirdly.
+
+    Bad Example: The classic "Square-Rectangle" problem. 
+    A Square inherits from Rectangle. 
+    If you set the Width and Height independently on a Rectangle, it works; if you do it on a Square,
+     the logic breaks because width must equal height.
+
+    Good Example: Ensure that subclasses strictly adhere to the behavior promised by the parent.
+     If a child cannot fulfill the parent's contract 
+     (e.g., a Penguin class inheriting from Bird but throwing an error on Fly()), the inheritance is wrong.
+
+Guidelines: Make sure inheritence is about behaviour not about data, basically inheritence should maintian invariants
+
+
+4. Interface Segregation Principle (ISP)
+
+    "No client should be forced to depend on methods it does not use."
+
+It is better to have many small, specific interfaces than one massive, "fat" interface.
+
+    Bad Example: An IMultiFunctionDevice interface with Print(), Scan(), and Fax(). 
+    A simple Inkjet printer is forced to implement Fax() even if it can't do it.
+
+    Good Example: Break it into IPrinter, IScanner, and IFaxMachine.
+     A device only implements what it actually does.
+
+Guidelines: Make sure interfaces dont induce unecessary dependencies
+
+
+5. Dependency Inversion Principle (DIP)
+
+    "Depend on abstractions, not concretions."
+
+High-level modules (the logic) should not depend on low-level modules (the tools).
+ Both should depend on interfaces. This is the heart of Dependency Injection.
+
+    Bad Example: A NotificationService class that creates a new EmailSender() 
+    inside its constructor. The service is now "hard-wired" to email. If you want to send an SMS, you have to rewrite the service.
+
+    Good Example: The NotificationService takes an IMessageSender
+     interface in its constructor. 
+     You can "inject" an EmailSender, SmsSender, or SlackSender without changing the service logic.
+It is the high level modules which defines the implementation, hence the inverson!
+Guidelines: Prefer to depend on abstractions instaed of conrete types
+
+
+
+
+
+
+
+Software Design is the art(not science) of managing dependencies, and abstractions!
+
+std::make_unique:
+1. Pre C++17 used to enforce exception safety, not after C++17
+2. Does not fullfill SRP - does not resolve any concern or Dependency
+3. its not a factory function : it is just an automatic creation function
+
+Software Design :
+    1. how small enties depend on each other
+    2. decisions which are easier to change
+    3. design patterns
+       Visior, Observer, Strategy
+
+Software Architecture :
+    1. How do big entities depend on each other
+    2. Decisions that are hard to change
+    3. Architectural patterns
+    4. E.g: Client - Server architeture, Microservices, etc.
+
+Idioms :
+    Idioms can be design patterns or imlemntation details.
+    Pimpl idiom, RAII Idiom, Copy and Swap Idiom, SFAINAE
+
+
+Guideline: Purpose of a design pattern is to introduce a fitting abstraction for a well known problem!
+
+std::make_unique is an implementation pattern not a design pattern.
+
+Misconceptions:
+    1. Limited to runtime polymorphism
+    2. Limited to OO programming
+    3. Language specific Idioms
+    4. Can be recognized by structure
+
+
+    Command design pattern: Introduces an abstraction on an action that can be invoked
+        std::for_each(v.begin(), v.end(), [](int& elt) { elt++; });
+        Command is about encapsulating a request
+        specifies what nees to be done
+
+
+    Strategy design pattern: Introduces a configuration for a context
+        Strategy is about algorithm swapping.
+        Species how it should be done.
+        std::sort(v.begin(), v.end(), [](int a, int b) { return a < b} );
+
+    Strategy / Command is about intent
+
+    names should replect the intent of design patterns
+
+
+Design patterns are everywhere in C++ std:
+1. Strategy : algo swapping
+    std::accumulate takes in a strategy for bianry operator
+    std::vector takes in an allocator for allocation strategy
+    std::unoredered_map : takes in an hash strategy
+    std::unique_ptr : takes in a deletor strategy
+2. Command : what needs to be done ?
+    std::for_each
+3. Iterator : forward, backward, const
+    Algorithms : high level
+    Containers : low level
+    Iterators / Concepts serve as a solution to them
+4. Adapter : Adapter is about compatibility
+    std::stack, std::queue, std::priority_queue, are all adapters with default container as std::deque
+5. Decorator : Heirarchial Allocators : Decorator is about enhancement. e.g: a coat, you are still you with augmentation
+6. proxy : std::vector<bool> : Controls access to the object.
+   The client doesn't even know it's talking to a proxy. The proxy decides whether/how to forward the call.
+    auto&& elt = vec[2]; -> returns a kind of proxy, we can access bits in C++
+    elt = false
+    same for std::bitset
+
+    eg: Lazy initialization / Access control / Caching, kind of a a bodyguard, decides if you get through
+
+7. Type Erasure: e.g std::any / std::function. type erasure uses external polymorphism / bridge / prototype
+8. CRTP : 
+9. Visitor : type based programming is hard to maintian,
+             virtual polymorphism : changing interfaces is hard to maintain
+
+             e.g shape interface
+             operations arre isolated in visitors
+
+             advantages:
+                1. non intrusive opertion addition OCP
+                2. isolation of implementaiton details SRP
+            disadvantages:
+                3. RESTRICTS OPERATION TO public interface
+                3. impedes addtion of ne types
+                4. 2 indirections due to polymprphism
+            solution to disadvantages 
+                std::variant -> non polymorphic interface
+                supports open set of operations on a closed set of types
+
+10. Bridge: Used to hide implementaition in .h file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

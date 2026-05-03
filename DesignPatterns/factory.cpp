@@ -113,24 +113,6 @@ public:
   }
 };
 class HotDrinkFactory {
-public:
-  virtual ~HotDrinkFactory() = default;
-  virtual std::unique_ptr<HotDrink> make() = 0;
-};
-class TeaFactory : public HotDrinkFactory {
-public:
-  ~TeaFactory() = default;
-  virtual std::unique_ptr<HotDrink> make() {
-    return std::make_unique<Tea>();
-  }
-};
-class CoffeeFactory : public HotDrinkFactory {
-public:
-  ~CoffeeFactory() = default;
-  virtual std::unique_ptr<HotDrink> make() {
-    return std::make_unique<Tea>();
-  }
-};
 class DrinkFactory {
   std::unordered_map<std::string, std::unique_ptr<HotDrinkFactory>> m_factories;
 public:

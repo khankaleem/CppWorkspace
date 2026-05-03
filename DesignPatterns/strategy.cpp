@@ -4,11 +4,19 @@
 #include<vector>
 #include<memory>
 
+/*
+  E.g std::accumulate(beg_, end_, strategy lambda);
+      Aash typename
+      Allocator typename
+  How to do ? : This is what a strategy pattern accomplishes
+*/
+
+
 enum class OUTPUT_FORMAT : uint8_t {
     HTML = 0,
     MARKDOWN = 1
 };
-
+// Dynamic Strategy : can use tmeplates to make this compile time
 class ListStrategy {
   public:
     ListStrategy() = default;
@@ -17,7 +25,6 @@ class ListStrategy {
     virtual void add_item(std::ostringstream& oss, const std::string& item_) {}
     virtual void end(std::ostringstream& oss) {}
 };
-
 class HtmlListStrategy : public ListStrategy {
   public:
     HtmlListStrategy() = default;
@@ -31,7 +38,6 @@ class HtmlListStrategy : public ListStrategy {
       oss << "</ui>\n";
     }
 };
-
 class MarkDownListStrategy : public ListStrategy {
   public:
     MarkDownListStrategy() = default;
@@ -39,7 +45,6 @@ class MarkDownListStrategy : public ListStrategy {
       oss << "* " << item_ << '\n';
     }
 };
-
 class TextProcessor {
   std::ostringstream m_oss;
   std::unique_ptr<ListStrategy> m_list;

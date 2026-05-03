@@ -30,6 +30,7 @@ public:
     m_price = price_;
     notify_observers(m_price);
   }
+
   void notify_observers(double price_) {
     for (auto& observer: m_observers) {
       auto ptr = observer.lock();
@@ -38,6 +39,7 @@ public:
       }
     }
   }
+
 };
 
 class DisplayPrice : public Observer {
